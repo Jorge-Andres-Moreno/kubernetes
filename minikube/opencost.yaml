@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: opencost
+  namespace: opencost
+spec:
+  selector:
+    app: opencost
+  type: LoadBalancer
+  ports:
+    - name: opencost
+      port: 9003
+      targetPort: 9003
+    - name: opencost-ui
+      port: 9090
+      targetPort: 9090

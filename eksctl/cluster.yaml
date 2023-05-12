@@ -1,0 +1,46 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: mercadolibre-cluster
+  region: us-east-1
+  version: "1.25"
+
+iam:
+  withOIDC: true
+
+vpc:
+  subnets:
+    public:
+      us-east-1a:
+        id: subnet-0308822e3c4aec4d4
+      us-east-1b:
+        id: subnet-0479ba5c129cb2c31      
+    private:
+      us-east-1a:
+        id: subnet-061f1e0d8fef947ee
+      us-east-1b:
+        id: subnet-0ef3378852d9c057c      
+  clusterEndpoints:
+    publicAccess:  true
+    privateAccess: true
+
+managedNodeGroups:
+  - name: SpotNodeGroup
+    spot: true
+    desiredCapacity: 2
+    instanceTypes: ["t3.large"]
+    privateNetworking: true
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        cloudWatch: true
+        externalDNS: true
+        certManager: true
+    tags:
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/mercadolibre-cluster: "owned"
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
